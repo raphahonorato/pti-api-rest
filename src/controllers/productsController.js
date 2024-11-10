@@ -23,7 +23,8 @@ function criarProduto(nome, preco) {
     }
     produtos.push(novoProduto)
 
-    return produtos
+    return { mensagem: 'Produto criado com sucesso!', novoProduto }
+
 }
 
 
@@ -32,7 +33,7 @@ function listarProduto(nome) {
         return { message: "Nome do produto não informado" };
     }
 
-    const produtosEncontrados = produtos.filter(produto => 
+    const produtosEncontrados = produtos.filter(produto =>
         produto.nome.toLowerCase().includes(nome.toLowerCase())
     )
 
@@ -55,10 +56,12 @@ function editarProduto(id, dadosAtualizados) {
         return { message: "Produto não encontrado" };
     }
 
-    // Atualiza os dados do produto existente
     produtos[produtoIndex] = { ...produtos[produtoIndex], ...dadosAtualizados };
 
-    return produtos[produtoIndex];
+    return {
+        mensagem: "produto atualizado com sucesso!",
+        produto: produtos[produtoIndex]
+    }
 }
 
 
@@ -69,7 +72,6 @@ function apagarProduto(id) {
         return { message: "Produto não encontrado" };
     }
 
-    // Remove o produto do array
     const produtoRemovido = produtos.splice(produtoIndex, 1);
     
     return { message: "Produto removido com sucesso", produto: produtoRemovido[0] };
