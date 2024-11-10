@@ -30,7 +30,7 @@ function criarProduto(nome, preco) {
 
 function listarProduto(nome) {
     if (!nome) {
-        return { message: "Nome do produto não informado" };
+        return { message: "Nome do produto não informado!" };
     }
 
     const produtosEncontrados = produtos.filter(produto =>
@@ -38,28 +38,24 @@ function listarProduto(nome) {
     )
 
     if (produtosEncontrados.length === 0) {
-        return { message: "Produto não encontrado" };
+        return { message: "Produto não encontrado!" };
     }
 
     return produtosEncontrados;
 }
 
 
-function listarTodosProdutos() {
-    return produtos;
-}
-
 function editarProduto(id, dadosAtualizados) {
     const produtoIndex = produtos.findIndex(produto => produto.id === id);
 
     if (produtoIndex === -1) {
-        return { message: "Produto não encontrado" };
+        return { message: "Produto não encontrado!" };
     }
 
     produtos[produtoIndex] = { ...produtos[produtoIndex], ...dadosAtualizados };
 
     return {
-        mensagem: "produto atualizado com sucesso!",
+        mensagem: "Produto atualizado com sucesso!",
         produto: produtos[produtoIndex]
     }
 }
@@ -73,15 +69,17 @@ function apagarProduto(id) {
     }
 
     const produtoRemovido = produtos.splice(produtoIndex, 1);
-    
-    return { message: "Produto removido com sucesso", produto: produtoRemovido[0] };
+
+    return {
+        message: "Produto removido com sucesso!",
+        produto: produtoRemovido[0]
+    };
 }
 
 
 module.exports = {
     criarProduto,
     listarProduto,
-    listarTodosProdutos,
     editarProduto,
     apagarProduto
 }

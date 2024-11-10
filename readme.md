@@ -1,5 +1,8 @@
 ## PTI API Rest
 
+### Aluno: Raphael Honorato e Silva
+
+
 Neste projeto construi uma demonstração de um sistema de cadastro de produtos.
 
 Existem rotas adequadas para cada requisição, mais abaixo documentei todas as funcionalidades da API, onde se pode realizar o crud completo com dados em memória, ler, criar, editar e apagar um produto.
