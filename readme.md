@@ -2,10 +2,9 @@
 
 ### Aluno: Raphael Honorato e Silva
 
+Neste projeto construí uma demonstração de um sistema de cadastro de produtos, de uma loja de peças e acessórios de computador.
 
-Neste projeto construi uma demonstração de um sistema de cadastro de produtos.
-
-Existem rotas adequadas para cada requisição, mais abaixo documentei todas as funcionalidades da API, onde se pode realizar o crud completo com dados em memória, ler, criar, editar e apagar um produto.
+Existem rotas adequadas para cada requisição, mais abaixo documentei todas as funcionalidades da API, onde se pode realizar o CRUD completo com dados reais trasidos do banco de dados MySQL.
 
 ### Clone o repositório
 
@@ -32,6 +31,22 @@ cp .env.example .env
 npm run dev
 ```
 
+### Modelo da tabela de produtos
+
+
+``` sql
+CREATE TABLE produtos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    preco DECIMAL(10, 2) NOT NULL,
+    quantidadeEstoque INT NOT NULL,
+    marca VARCHAR(100) NOT NULL,
+    modelo VARCHAR(100) NOT NULL,
+    garantiaMeses INT NOT NULL
+);
+```
+
+
 ### Rotas
 
 | Método | Rota | Descrição |
@@ -40,7 +55,6 @@ npm run dev
 |  GET  |  /produto?nome={nomeProduto} | Lista o produto com base no seu nome. |
 | PUT      | /produto/{ID}      | Atualiza um produto com base no ID.      |
 |     DELETE     |    /produto/{ID}    |  Apaga um produto com base no seu ID.  |
-
 
 ## **POST** `/produto`
 
@@ -52,10 +66,12 @@ npm run dev
 
 ```bash
 {
-
-    "nome": "Nome exemplo",
-    "preco": 200
-
+            "nome":"Produto exemplo",
+            "preco":"100",
+            "quantidadeEstoque":"10",
+            "marca":"Marca exemplo",
+            "modelo":"Modelo de exemplo",
+            "garantiaMeses":"12"
 }
 
 ```
@@ -68,11 +84,13 @@ npm run dev
 {
     "mensagem": "Produto criado com sucesso!",
     "novoProduto": {
-        "id": 1,
-        "nome": "Nome exemplo",
-        "preco": 200
-        "criadoEm": "10/11/2024, 11:52:25",
-        "atualizadoEm": "10/11/2024, 11:52:25"
+            "id": 1,
+            "nome":"Produto exemplo",
+            "preco":"100",
+            "quantidadeEstoque":"10",
+            "marca":"Marca exemplo",
+            "modelo":"Modelo de exemplo",
+            "garantiaMeses":"12"
     }
 }
 ```
@@ -88,13 +106,26 @@ npm run dev
 **Status Code: 200 OK**
 
 ```bash
+[
     {
-        "id": 1,
-        "nome": "Produto 1",
-        "preco": 10,
-        "criadoEm": "10/11/2024, 11:18:24",
-        "atualizadoEm": "10/11/2024, 11:18:24"
+            "id": 1,
+            "nome":"Produto exemplo",
+            "preco":"100",
+            "quantidadeEstoque":"10",
+            "marca":"Marca exemplo",
+            "modelo":"Modelo de exemplo",
+            "garantiaMeses":"12"
+    },
+    {
+            "id": 2,
+            "nome":"Produto exemplo",
+            "preco":"200",
+            "quantidadeEstoque":"20",
+            "marca":"Marca exemplo2",
+            "modelo":"Modelo de exemplo2",
+            "garantiaMeses":"24"
     }
+]
 ```
 
 ## **PUT** `/produto/{Id}`
@@ -108,8 +139,12 @@ npm run dev
 ```bash
 {
 
-    "nome": "Nome atualizado",
-    "preco": 50
+    "nome":"Produto exemplo",
+    "preco":"100",
+    "quantidadeEstoque":"10",
+    "marca":"Marca exemplo",
+    "modelo":"Modelo de exemplo",
+    "garantiaMeses":"12"
 
 }
 
@@ -122,12 +157,14 @@ npm run dev
 ```bash
 {
     "mensagem": "Produto atualizado com sucesso!",
-    "produto": {
-        "id": 4,
-        "nome": "Nome atualizado",
-        "preco": 50
-        "criadoEm": "10/11/2024, 11:52:25",
-        "atualizadoEm": "10/11/2024, 11:52:25"
+    "id": 1,
+    "dadosAtualizados": {
+        "nome":"Produto exemplo",
+        "preco":"100",
+        "quantidadeEstoque":"10",
+        "marca":"Marca exemplo",
+        "modelo":"Modelo de exemplo",
+        "garantiaMeses":"12"
     }
 }
 
@@ -143,13 +180,7 @@ npm run dev
 
 ```bash
 {
-    "message": "Produto removido com sucesso",
-    "produto": {
-        "id": 1,
-        "nome": "Produto exemplo",
-        "preco": 10,
-        "criadoEm": "10/11/2024, 11:18:24",
-        "atualizadoEm": "10/11/2024, 11:18:24"
-    }
+    "mensagem": "Produto removido com sucesso!",
+    "id": "1"
 }
 ```
