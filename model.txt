@@ -1,0 +1,11 @@
+Modelo da tabela de produtos
+
+CREATE TABLE produtos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    preco DECIMAL(10, 2) NOT NULL,
+    quantidadeEstoque INT NOT NULL,
+    marca VARCHAR(100) NOT NULL,
+    modelo VARCHAR(100) NOT NULL,
+    garantiaMeses INT NOT NULL
+);

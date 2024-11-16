@@ -1,79 +1,113 @@
-let produtos = []
-let idProduct = 1
+const connection = require('../database/database')
 
-const dataAtual = new Date()
-const dataFormatada = dataAtual.toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-})
+async function criarProduto(nome, preco, quantidadeEstoque, marca, modelo, garantiaMeses) {
+    try {
+        const conexao = await connection.connect();
+        const sql = `INSERT INTO produtos (nome, preco, quantidadeEstoque, marca, modelo, garantiaMeses) VALUES (?, ?, ?, ?, ?, ?)`;
 
+        const [result] = await conexao.execute(sql, [
+            nome,
+            preco,
+            quantidadeEstoque,
+            marca,
+            modelo,
+            garantiaMeses,
+        ]);
 
-function criarProduto(nome, preco) {
-
-    const novoProduto = {
-        id: idProduct++,
-        nome,
-        preco,
-        criadoEm: dataFormatada,
-        atualizadoEm: dataFormatada,
+        return {
+            mensagem: 'Produto criado com sucesso!',
+            novoProduto: {
+                id: result.insertId,
+                nome,
+                preco,
+                quantidadeEstoque,
+                marca,
+                modelo,
+                garantiaMeses,
+            },
+        };
+    } catch (err) {
+        console.error('Erro ao criar o produto:', err.message);
+        throw err;
     }
-    produtos.push(novoProduto)
-
-    return { mensagem: 'Produto criado com sucesso!', novoProduto }
-
 }
 
+async function listarProduto(nome) {
+    try {
+        const conexao = await connection.connect();
 
-function listarProduto(nome) {
-    if (!nome) {
-        return { message: "Nome do produto não informado!" };
-    }
+        if (!nome) {
+            return { mensagem: "Nome do produto não informado!" };
+        }
 
-    const produtosEncontrados = produtos.filter(produto =>
-        produto.nome.toLowerCase().includes(nome.toLowerCase())
-    )
+        const sql = `SELECT * FROM produtos WHERE nome LIKE ?`;
+        const [produtosEncontrados] = await conexao.execute(sql, [`%${nome}%`]);
 
-    if (produtosEncontrados.length === 0) {
-        return { message: "Produto não encontrado!" };
-    }
+        if (produtosEncontrados.length === 0) {
+            return { mensagem: "Produto não encontrado!" };
+        }
 
-    return produtosEncontrados;
-}
-
-
-function editarProduto(id, dadosAtualizados) {
-    const produtoIndex = produtos.findIndex(produto => produto.id === id);
-
-    if (produtoIndex === -1) {
-        return { message: "Produto não encontrado!" };
-    }
-
-    produtos[produtoIndex] = { ...produtos[produtoIndex], ...dadosAtualizados };
-
-    return {
-        mensagem: "Produto atualizado com sucesso!",
-        produto: produtos[produtoIndex]
+        return produtosEncontrados;
+    } catch (err) {
+        console.error('Erro ao listar produtos:', err.message);
+        throw err;
     }
 }
 
 
-function apagarProduto(id) {
-    const produtoIndex = produtos.findIndex(produto => produto.id === id);
+async function editarProduto(id, dadosAtualizados) {
+    try {
+        const conexao = await connection.connect();
 
-    if (produtoIndex === -1) {
-        return { message: "Produto não encontrado" };
+        if (!id) {
+            return { mensagem: "ID do produto não informado!" };
+        }
+
+        const camposAtualizados = Object.keys(dadosAtualizados);
+        const valoresAtualizados = camposAtualizados.map(campo => dadosAtualizados[campo]);
+        const setClause = camposAtualizados.map(campo => `${campo} = ?`).join(', ');
+        const sql = `UPDATE produtos SET ${setClause} WHERE id = ?`;
+        const [result] = await conexao.execute(sql, [...valoresAtualizados, id]);
+
+        if (result.affectedRows === 0) {
+            return { mensagem: "Produto não encontrado!" };
+        }
+
+        return {
+            mensagem: "Produto atualizado com sucesso!",
+            id,
+            dadosAtualizados
+        };
+    } catch (err) {
+        console.error('Erro ao atualizar o produto:', err.message);
+        throw err;
     }
+}
 
-    const produtoRemovido = produtos.splice(produtoIndex, 1);
 
-    return {
-        message: "Produto removido com sucesso!",
-        produto: produtoRemovido[0]
-    };
+async function apagarProduto(id) {
+    try {
+        const conexao = await connection.connect();
+
+        if (!id) {
+            return { mensagem: "ID do produto não informado!" };
+        }
+
+        const sql = `DELETE FROM produtos WHERE id = ?`;
+        const [result] = await conexao.execute(sql, [id]);
+
+        if (result.affectedRows === 0) {
+            return { mensagem: "Produto não encontrado!" };
+        }
+
+        return {
+            mensagem: "Produto removido com sucesso!",
+            id
+        };
+    } catch (err) {
+        console.error('Erro ao remover o produto:', err.message);
+        throw err;
+    }
 }
 
 
